@@ -9,6 +9,15 @@ With a background originally in the arts, returning to education as a mature stu
 * **BTEC Level 3 Double Diploma in Electrical Engineering: _Triple Distinction \*_ **
 * GCSE: 6 A*-B (inc. English, Science, & Maths)
 
+## Projects
+* **Software engineering** project work at multiple scales in different IDEs and OSs, with various **source control** requirements and services:
+ * Processing (language) based generative **music application**
+  * **Architectural design**, **implementation**, **documentation**, and **surveys** of app users
+  * All self-directed and solo-developed on **sprint-based** development cycles, following **agile principles**
+  * Focus on **feedback** for **ease-of-use** and **intuitiveness**, allowing users of multiple skill levels to appreciate and enjoy the rules generating their music
+ * **Java** and **XML** based open-source MMO project, Stendhal
+  * Worked first as part of, and then **lead a team** to **bug-find** and add gameplay features and tests, adhering to **JUnit testing** standards
+
 ## Skills
 * Very strong **communication** skills from an original background in speech and drama
  * **Teaching-level qualification** from LAMDA (London Academy of Music & Dramatic Art)
@@ -25,15 +34,6 @@ With a background originally in the arts, returning to education as a mature stu
  * From coursework to DMing D&D, I thrive on connecting different people and skills
 * Contributed to the uni’s new **game dev** society
  * **Music**, **sound scripting**, and refining **game design** ideation to the still-in-development first project
-
-## Projects
-* **Software engineering** project work at multiple scales in different IDEs and OSs, with various **source control** requirements and services:
- * Processing (language) based generative **music application**
-  * **Architectural design**, **implementation**, **documentation**, and **surveys** of app users
-  * All self-directed and solo-developed on **sprint-based** development cycles, following **agile principles**
-  * Focus on **feedback** for **ease-of-use** and **intuitiveness**, allowing users of multiple skill levels to appreciate and enjoy the rules generating their music
- * **Java** and **XML** based open-source MMO project, Stendhal
-  * Worked first as part of, and then **lead a team** to **bug-find** and add gameplay features and tests, adhering to **JUnit testing** standards
 
 ## Work Experience
 _Specialist, Apple Inc. | London, Exeter, Manchester | 2010-2014_
