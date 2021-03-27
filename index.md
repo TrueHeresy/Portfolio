@@ -1,5 +1,5 @@
 # Declan Kehoe CV
-Download here
+[Download](https://github.com/TrueHeresy/portfolio/raw/gh-pages/Declan%20Kehoe%20CV(2021).pdf)
 
 ## Profile
 With a background originally in the arts, returning to education as a mature student for a combined degree comprising of computer science, software engineering, psychology, anthropology, and biology has taught me a more holistic view of development cycles, and made my skills and knowledge more flexible and multi-disciplined. My goal is to combine what I have learned to deliver projects which are useful and intuitive to end users, through a detailed understanding of the many aspects that comprise a user’s experience. After being forced to defer due to illness, my determination to complete my education and build a career has remained strong. Having now recovered, I’m excited to travel wherever opportunities arise, and embrace the future I have persevered for.
