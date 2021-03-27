@@ -37,6 +37,7 @@ With a background originally in the arts, returning to education as a mature stu
 
 ## Work Experience
 _Specialist, Apple Inc. | London, Exeter, Manchester | 2010-2014_
+
 A high-stress and fast-pace environment that still required **attention to detail**, **exceptional communication skills** with colleagues and customers, and **relentless customer focus**. I was consistently among the **top 5 performing** employees within months of joining new teams, and **conducted teaching** sessions across a range of customers and stores, learning to **articulate complex information** to audiences of multiple comprehension, ability, and skill levels.
 
 ## Hobbies
