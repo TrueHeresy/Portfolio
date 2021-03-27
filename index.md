@@ -10,7 +10,7 @@ With a background originally in the arts, returning to education as a mature stu
 * GCSE: 6 A*-B (inc. English, Science, & Maths)
 
 ## Projects
-* **Software engineering** project work at multiple scales in different IDEs and OSs, with various **source control** requirements and services:
+**Software engineering** project work at multiple scales in different IDEs and OSs, with various **source control** requirements and services:
   * Processing (language) based generative **music application**
     * **Architectural design**, **implementation**, **documentation**, and **surveys** of app users
     * All self-directed and solo-developed on **sprint-based** development cycles, following **agile principles**
