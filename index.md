@@ -6,7 +6,7 @@ With a background originally in the arts, returning to education as a mature stu
 
 ## Education
 * Final Year **BSc Human Computer Interaction: _1st Class Hons (Est.)_** at The University of Manchester 
-* __BTEC Level 3 Double Diploma in Electrical Engineering: _Triple Distinction_ __
+* __BTEC Level 3 Double Diploma__ in Electrical Engineering: **_Triple Distinction \*_**
 * GCSE: 6 A*-B (inc. English, Science, & Maths)
 
 ## Projects
