@@ -1,4 +1,3 @@
-import java.util.*;
 import processing.sound.*;
 
 Sound s = new Sound(this);
@@ -10,6 +9,8 @@ int       currentOscType;
 float     beatLength;
 boolean   currentKeyIsMajor;
 
+IntList   noteRoll;
+
 String[]  userMessage     = new String[2];
 String[]  oscTypes        = new String[4];
 String    countMessage    = ".";
@@ -18,8 +19,6 @@ volatile boolean userStopped  = false;
 
 HashMap<Float, String> frequencyToNoteMap = new HashMap<Float, String>();
 ArrayList<Oscillator> oscillatorList = new ArrayList<Oscillator>();
-
-int[] noteRoll;
 
 float[] definedNotes = new float[24];
 float[] octaveFromC  = new float[13];
@@ -36,16 +35,17 @@ float[] octaveFromAs = new float[13];
 float[] octaveFromB  = new float[13];
 
 float[]  currentKeyFrequencies  = new float[8];
-String[] currentKeyNotes = new String[8];
+StringList currentKeyNotes;
+String   displayNotes, displayKey;
 String   currentChordType, complexReadout, simpleUpdate = "";
 
 // Variables for buttons
 int     addButtonX,     addButtonY,     removeButtonX,  removeButtonY,
         keyAndTempoX, keyAndTempoY, synthButtonX, synthButtonY, 
         playButtonX,      playButtonY,      stopButtonX,  stopButtonY;
-int     buttonWidth  = 250;
+int     buttonWidth  = 275;
 int     buttonHeight = 200;
-int     infoWidth    = 500;
+int     infoWidth    = 550;
 int     infoHeight   = 100;
 color   addButtonColor,         removeButtonColor, 
         keyAndTempoButtonColor, synthButtonColor,
@@ -69,7 +69,7 @@ PFont  SFMono;
 
 void setup() {
   // Size of the canvas
-  size(500, 750);
+  size(550, 750);
   SFMono = loadFont("SFMono-Medium-15.vlw");
   textFont(SFMono);
   
@@ -99,11 +99,10 @@ void setup() {
 
   glyph = #717171;
 
-
   // Positioning buttons
-  addButtonX     =   0; addButtonY     = 150; removeButtonX  = 250; removeButtonY  = 150;
-  keyAndTempoX   =   0; keyAndTempoY   = 350; synthButtonX   = 250; synthButtonY   = 350; 
-  playButtonX    =   0; playButtonY    = 550; stopButtonX    = 250; stopButtonY    = 550;
+  addButtonX     =   0; addButtonY     = 150; removeButtonX  = 275; removeButtonY  = 150;
+  keyAndTempoX   =   0; keyAndTempoY   = 350; synthButtonX   = 275; synthButtonY   = 350; 
+  playButtonX    =   0; playButtonY    = 550; stopButtonX    = 275; stopButtonY    = 550;
 
   // Note naming map
   frequencyToNoteMap.put(261.63, "C" ); frequencyToNoteMap.put(277.18, "C#");
@@ -158,10 +157,14 @@ void setup() {
   beatsPerBar       = 4;
   beatLength        = 60000 / bpm;
   beatDelay         = (int)beatLength;
-  noteRoll          = new int[16];
+  currentKeyNotes   = new StringList();
+  noteRoll          = new IntList();
 
-  Arrays.fill(noteRoll, 0);
-
+  // Fill the note roll with blanks
+  for (int i = 0; i < 16; i++) {
+    noteRoll.append(0);
+  }
+  
   userMessage[SIMPLE] = "Try all the buttons, mess around, it's safe & free!" +
                         "\nClick this readout screen to toggle more/less detail" +
                         "\n\nHint: Add some notes then hit play :)";
@@ -178,14 +181,15 @@ void draw() {
   // Track the mouse and fill in the window
   update(mouseX, mouseY);
   background(color(0));
-
+  
+  displayKey = currentKeyNotes.toString().substring(18);
   complexReadout = "\nKey: " + frequencyToNoteMap.get(currentRootNote) + (currentKeyIsMajor ? "maj " : "min ") + 
-                    Arrays.toString(currentKeyNotes) +
+                    displayKey +
                     "\nTempo: " + bpm + "bpm" + "     |     Oscillator: " + oscTypes[currentOscType];
 
   // Get the note names
   for (int i = 0; i < currentKeyFrequencies.length; ++i) {
-    currentKeyNotes[i] = frequencyToNoteMap.get(currentKeyFrequencies[i]);
+    currentKeyNotes.set(i, frequencyToNoteMap.get(currentKeyFrequencies[i]));
   }
 
   // User info
@@ -193,11 +197,12 @@ void draw() {
   fill(255);
   // Basic mode
   if (!complexMode) {
-    text(userMessage[SIMPLE], 250, 10);
+    text(userMessage[SIMPLE], 275, 10);
     textAlign(LEFT, CENTER);
     // Timeline
     fill(255);
-    text(Arrays.toString(noteRoll) + "\n" + countMessage, 34, 125);
+    displayNotes = noteRoll.toString().substring(16);
+    text(displayNotes + "\n" + countMessage, 50, 125);
 
     // Draw and track the add note button
     if (addButtonOver) {
@@ -239,12 +244,12 @@ void draw() {
 
   // Complex mode
   else {
-    text(userMessage[COMPLEX],
-        250, 10);
+    text(userMessage[COMPLEX], 275, 10);
     textAlign(LEFT, CENTER);
     // Timeline
     fill(255);
-    text(Arrays.toString(noteRoll) + "\n" + countMessage, 34, 125);
+    displayNotes = noteRoll.toString().substring(16);
+    text(displayNotes + "\n" + countMessage, 50, 125);
 
     // Draw and track the add note button
     if (addButtonOver) {
@@ -434,8 +439,8 @@ void mousePressed() {
 
 // Add a note to a random point in the timeline
 void addNote() {
-  Random randy = new Random();
-  int randomIndex = randy.nextInt(noteRoll.length);
+//  Random randy = new Random();
+  int randomIndex = int(random(noteRoll.size()));
 
   // Make sure to add a note to an empty place in the timeline, up to the max of 16
   if (notesInTimeline >= 16) {
@@ -444,22 +449,22 @@ void addNote() {
     notesInTimeline++;
     timelineFull = false;
   }
-  while (noteRoll[randomIndex] == 1 && !timelineFull) {
-    randomIndex = randy.nextInt(noteRoll.length);
+  while (noteRoll.get(randomIndex) == 1 && !timelineFull) {
+    randomIndex = int(random(noteRoll.size()));
   }
 
-  noteRoll[randomIndex] = 1;
+  noteRoll.set(randomIndex, 1);
 
   // Now change to a random index for the note
-  randomIndex = randy.nextInt(currentKeyFrequencies.length - 1);
+  randomIndex = int(random(currentKeyFrequencies.length - 1));
   
   Env    envelope   = new Env(this);
 
   float  oscNote    = currentKeyFrequencies[randomIndex];
   float  oscAmp     = 0.3;
-  float  oscSusTime = ((beatLength * ((randy.nextInt(16) + beatsPerBar))) / 1000);
+  float  oscSusTime = ((beatLength * ((int(random(16)) + beatsPerBar))) / 1000);
   float  oscAtk     = oscSusTime / 3;
-  float  oscSusLvl  = 0.25 + randy.nextFloat() * (0.8 - 0.25);
+  float  oscSusLvl  = 0.25 + random(1) * (0.8 - 0.25);
   float  oscRelTime = oscSusTime / 3;
 
   println("Note: "      + frequencyToNoteMap.get(oscNote) +
@@ -503,8 +508,8 @@ void addNote() {
 
 // Remove a filled note from the timline
 void removeNote() {
-  Random randy = new Random();
-  int randomIndex = randy.nextInt(noteRoll.length);
+  //Random randy = new Random();
+  int randomIndex =int(random(noteRoll.size()));
 
   // Make sure there's a note to remove
   if (notesInTimeline <= 0) {
@@ -513,11 +518,11 @@ void removeNote() {
     notesInTimeline--;
     timelineFull = false;
   }
-  while (noteRoll[randomIndex] == 0 && !timelineFull) {
-    randomIndex = randy.nextInt(noteRoll.length);
+  while (noteRoll.get(randomIndex) == 0 && !timelineFull) {
+    randomIndex = int(random(noteRoll.size()));
   }
   
-  noteRoll[randomIndex] = 0;
+  noteRoll.set(randomIndex, 0);
 
   // Update user message
   simpleUpdate = "Note removed";
@@ -526,31 +531,30 @@ void removeNote() {
 
 // Change the key and the tempo
 void changeKeyandTempo() {
-  Random randy = new Random();
+//  Random randy = new Random();
 
   // Change the key
-  int randomIndex = randy.nextInt(11); 
+  int randomIndex = int(random(11)); 
   currentRootNote = definedNotes[randomIndex];
-  currentKeyIsMajor = randy.nextBoolean();
+  currentKeyIsMajor = (random(1) < 0.5) ? false : true;
+  print(currentKeyIsMajor);
   setScale();
 
   // Set the maximum bpm somewhere between 40 and 120
-  bpm          = (randy.nextInt(16) + 8) * 5;
-  beatValue    = randy.nextInt(5) + 1;
+  bpm          = (int(random(16) + 8) * 5);
+  beatValue    = int(random(5) + 1);
   beatLength   = 60000 / bpm;
   beatDelay    = (int)beatLength;  
 
-  ListIterator<Oscillator> itr = oscillatorList.listIterator();
   if (notesInTimeline != 0) {
-    while (itr.hasNext()) {
-      randomIndex = randy.nextInt(currentKeyFrequencies.length - 1);
-      itr.next();
+    for (int i = 0; i < oscillatorList.size(); i++) {
+      randomIndex = int(random(currentKeyFrequencies.length - 1));
       Env    envelope   = new Env(this);
       float  oscNote    = currentKeyFrequencies[randomIndex];
       float  oscAmp     = 0.3;
-      float  oscSusTime = ((beatLength * ((randy.nextInt(16) + beatsPerBar))) / 1000);
+      float  oscSusTime = ((beatLength * ((int(random(16)) + beatsPerBar))) / 1000);
       float  oscAtk     = oscSusTime / 3;
-      float  oscSusLvl  = 0.25 + randy.nextFloat() * (0.8 - 0.25);
+      float  oscSusLvl  = 0.25 + random(1) * (0.8 - 0.25);
       float  oscRelTime = oscSusTime / 3;
 
       println("Note: "      + frequencyToNoteMap.get(oscNote) +
@@ -564,25 +568,25 @@ void changeKeyandTempo() {
         case SIN: 
           SinOsc sinOsc = new SinOsc(this);
           Oscillator newSin = new Oscillator(sinOsc, currentOscType, oscNote, oscAmp, envelope, oscAtk, oscSusTime, oscSusLvl, oscRelTime);
-          itr.set(newSin);
+          oscillatorList.set(i, newSin);
         break;
 
         case SAW:
           SawOsc sawOsc = new SawOsc(this);
           Oscillator newSaw = new Oscillator(sawOsc, currentOscType, oscNote, oscAmp, envelope, oscAtk, oscSusTime, oscSusLvl, oscRelTime);
-          itr.set(newSaw);
+          oscillatorList.set(i, newSaw);
         break;
 
         case SQR:
           SqrOsc sqrOsc = new SqrOsc(this);
           Oscillator newSqr = new Oscillator(sqrOsc, currentOscType, oscNote, oscAmp, envelope, oscAtk, oscSusTime, oscSusLvl, oscRelTime);
-          itr.set(newSqr);
+          oscillatorList.set(i, newSqr);
         break;
 
         case TRI:
           TriOsc triOsc = new TriOsc(this);
           Oscillator newTri = new Oscillator(triOsc, currentOscType, oscNote, oscAmp, envelope, oscAtk, oscSusTime, oscSusLvl, oscRelTime);
-          itr.set(newTri);
+          oscillatorList.set(i, newTri);
         break;
       }
     }
@@ -594,20 +598,19 @@ void changeKeyandTempo() {
 
 // Change the oscillator type in the timeline
 void changeSynth() {
-  Random randy = new Random();
-  int nextOscType = randy.nextInt(4);
+  //Random randy = new Random();
+  int nextOscType = int(random(4));
 
   while(nextOscType == currentOscType) {
-    nextOscType = randy.nextInt(4);
+    nextOscType = int(random(4));
   }
 
   currentOscType = nextOscType;
 
-  ListIterator<Oscillator> itr = oscillatorList.listIterator();
   if (notesInTimeline != 0) {
-    while (itr.hasNext()) {
-    Oscillator updatedOscillator = updateOscillator(itr.next());
-    itr.set(updatedOscillator);
+    for (int i = 0; i < oscillatorList.size(); i++) {
+    Oscillator updatedOscillator = updateOscillator(oscillatorList.get(i));
+    oscillatorList.set(i, updatedOscillator);
     }
   }
 
@@ -654,8 +657,8 @@ void startPlaying() {
     int ticker = 0;
     int oscToPlay = 0;
     countMessage = "";
-    while (ticker < noteRoll.length) {
-      if (noteRoll[ticker] == 1 && !userStopped) {
+    while (ticker < noteRoll.size()) {
+      if (noteRoll.get(ticker) == 1 && !userStopped) {
         oscillatorList.get(oscToPlay).run();
         oscToPlay++;
         
@@ -666,7 +669,7 @@ void startPlaying() {
         (int)(oscToPlay == 0 ? (oscillatorList.get(oscToPlay).attackTime + oscillatorList.get(oscToPlay).sustainTime + oscillatorList.get(oscToPlay).releaseTime) : 
           (oscillatorList.get(oscToPlay -1).attackTime + oscillatorList.get(oscToPlay -1).sustainTime + oscillatorList.get(oscToPlay -1).releaseTime)) + " seconds";
         countMessage = countMessage.concat("--|");
-      } else if (noteRoll[ticker] == 0 && !userStopped) {
+      } else if (noteRoll.get(ticker) == 0 && !userStopped) {
           userMessage[SIMPLE] = "Playing\n" + simpleUpdate;
           userMessage[COMPLEX] = complexReadout + "\n" + Integer.toString(ticker + 1) + 
           "| " + (oscToPlay == 0 ? frequencyToNoteMap.get(oscillatorList.get(oscToPlay).note) : frequencyToNoteMap.get(oscillatorList.get(oscToPlay - 1).note)) + " plays for " + 
@@ -674,7 +677,7 @@ void startPlaying() {
             (oscillatorList.get(oscToPlay -1).attackTime + oscillatorList.get(oscToPlay -1).sustainTime + oscillatorList.get(oscToPlay -1).releaseTime)) + " seconds";
           countMessage = countMessage.concat("--|");
         } else {
-          ticker = noteRoll.length;
+          ticker = noteRoll.size();
           userMessage[SIMPLE] = "Stopping...\n" + simpleUpdate;
           userMessage[COMPLEX] = "Stopping...";
         }
@@ -739,7 +742,7 @@ void basicSquare(int buttonX, int buttonY, color background, String message, PIm
     // Glyph & Button paramters
     stroke(255);
     fill(background);
-    rect(buttonX+75, buttonY+50, 100, 100);
+    rect(buttonX+88, buttonY+50, 100, 100);
     textAlign(CENTER, CENTER);
     fill(glyph);
     text(message, buttonX+(buttonWidth/2), buttonY+(buttonHeight/2));
